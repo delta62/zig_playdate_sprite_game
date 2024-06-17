@@ -1,0 +1,73 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Zig build",
+            "command": "zig",
+            "args": [
+                "build"
+            ],
+            "group": "build",
+            "presentation": {
+                "showReuseMessage": false
+            }
+        },
+        {
+            "label": "Copy pdex.so",
+            "command": "cp zig-out/lib/lib${workspaceFolderBasename}.so Source/pdex.so",
+            "type": "shell",
+            "group": "none",
+            "presentation": {
+                "showReuseMessage": false
+            }
+        },
+        {
+            "label": "Clean",
+            "command": "rm Source/pdex.so",
+            "type": "shell",
+            "group": "none",
+            "presentation": {
+                "showReuseMessage": false
+            }
+        },
+        {
+            "label": "Compile .pdx",
+            "type": "shell",
+            "command": "pdc Source sprite_game",
+            "group": "build",
+            "options": {
+                "env": {
+                    "PLAYDATE_SDK_PATH": "${userHome}/.local/share/playdate-sdk",
+                    "PATH": "${env:PATH}:${env:PLAYDATE_SDK_PATH}/bin"
+                }
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Clean",
+                "Copy pdex.so",
+                "Zig build"
+            ]
+        },
+        {
+            "label": "Run Playdate Simulator",
+            "command": "PlaydateSimulator",
+            "args": [
+                "sprite_game.pdx"
+            ],
+            "group": "build",
+            "options": {
+                "env": {
+                    "PLAYDATE_SDK_PATH": "${userHome}/.local/share/playdate-sdk",
+                    "PATH": "${env:PATH}:${env:PLAYDATE_SDK_PATH}/bin"
+                }
+            }
+        }
+    ]
+}
